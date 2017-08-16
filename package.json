@@ -1,0 +1,20 @@
+{
+  "name": "ga-events-helper",
+  "version": "0.1.0-b",
+  "description": "A JavaScript library helper to add events to Google Analytics.",
+  "main": "gaEvHelper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Júnior Garcia <itamarjr91@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-rm": "^1.0.4",
+    "gulp-serve": "^1.4.0",
+    "gulp-strip-debug": "^1.1.0",
+    "gulp-uglifyjs": "^0.6.2"
+  },
+  "dependencies": {}
+}
