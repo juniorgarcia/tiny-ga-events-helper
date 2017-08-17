@@ -15,8 +15,8 @@
 	<script src="src/gaEvHelper.js" type="text/javascript"></script>
 </head>
 <body>
-<button class="button button-1">button-1</button>
-<button class="button button-2">button-2</button>
+<button class="button button-1" data-label="button-1">button-1</button>
+<button class="button button-2" data-label="button-2">button-2</button>
 <button class="button button-3">button-3</button>
 <button class="button button-4">button-4</button>
 <button class="button button-5">button-5</button>
@@ -27,7 +27,11 @@
         domEvent: 'click',
         eventCategory: 'test!',
         eventAction: 'myAction',
-        eventLabel: 'myLabel',
+        eventLabel: function() {
+            // `this` is the **INDIVIDUAL** DOM element itself. You can access the DOM API using `this` in any callback function
+			// for these events.
+            return this.dataset.label;
+		},
         eventValue: 'myValue'
     }];
 
