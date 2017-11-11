@@ -54,7 +54,7 @@ AnalyticsEventHelper.prototype._extractValuesFromEvent = function(event, el) {
     console.group('Extracting values from event:');
     for(var i = 0; i < keys.length; i++) {
         var key = keys[i];
-        if (this._availableKeysForEvent.indexOf(key) == -1) {
+        if (this._availableKeysForEvent.indexOf(key) === -1) {
             console.log('Invalid key for GA event:"' + key + '".');
             continue;
         }
@@ -89,17 +89,15 @@ AnalyticsEventHelper.prototype.addEvent = function(event) {
         return target;
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var el = document.querySelectorAll(event.el);
-        for(var i = 0; i < el.length; i++) {
-            el[i].addEventListener(event.domEvent, function() {
-                ga('send',
-                    extend(
-                        {hitType: 'event'},
-                        instance._extractValuesFromEvent(event, this)
-                    )
-                );
-            });
-        }
-    });
+    var el = document.querySelectorAll(event.el);
+    for(var i = 0; i < el.length; i++) {
+        el[i].addEventListener(event.domEvent, function() {
+            ga('send',
+                extend(
+                    {hitType: 'event'},
+                    instance._extractValuesFromEvent(event, this)
+                )
+            );
+        });
+    }
 };
