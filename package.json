@@ -1,20 +1,26 @@
 {
   "name": "ga-events-helper",
-  "version": "0.1.0-b",
-  "description": "A JavaScript library helper to add events to Google Analytics.",
-  "main": "gaEvHelper.js",
+  "version": "0.2.0-beta",
+  "description": "A JavaScript library helper to add events to Google Analytics based on DOM events.",
+  "main": "src/AnalyticsEventHelper.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --open --mode=development --config=webpack.dev.js",
+    "production": "webpack --mode=production --config=webpack.prod.js"
   },
   "author": "Júnior Garcia <itamarjr91@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-rm": "^1.0.4",
-    "gulp-serve": "^1.4.0",
-    "gulp-strip-debug": "^1.1.0",
-    "gulp-uglifyjs": "^0.6.2"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1",
+    "webpack-merge": "^4.1.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lodash": "^4.17.5"
+  }
 }
