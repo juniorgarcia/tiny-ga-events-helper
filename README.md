@@ -1,7 +1,7 @@
 # Google Analytics Events Helper
 ### A simple organizer for your [Google Analytics events](https://developers.google.com/analytics/devguides/collection/analyticsjs/).
 
-If you would like to see an example, see [index.html](https://github.com/juniorgarcia/google-analytics-event-helper/blob/master/dist/index.html#L30).
+If you would like to see an example, see [index.html](https://github.com/juniorgarcia/google-analytics-event-helper/blob/master/example/index.html#L30).
 
 ## How to use it:
 1. Include the file `dist/analytics-event-helper.min.js` in your HTML or import the
@@ -25,7 +25,7 @@ The values for the `events` keys can be callbacks. This is useful when the event
 the element that triggers it. **Attention**: Inside those callbacks, `this` refers to the **individual**
 DOM element. By now, only four keys for the events are allowed, they are the same as Google Analytics uses:
 **eventCategory**, **eventAction**, **eventLabel** and **eventValue**.
-See [index.html](https://github.com/juniorgarcia/google-analytics-event-helper/blob/master/dist/index.html#L30) to check how
+See [index.html](https://github.com/juniorgarcia/google-analytics-event-helper/blob/master/example/index.html#L30) to check how
 it works. Remember to check the HTML to understand this example.
 
 3. Create a `AnalyticsEventHelper` object passing the array of events:
