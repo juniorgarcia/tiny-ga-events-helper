@@ -1,6 +1,6 @@
 {
   "name": "ga-events-helper",
-  "version": "0.2.0-beta",
+  "version": "0.3.0-beta",
   "description": "A JavaScript library helper to add events to Google Analytics based on DOM events.",
   "main": "src/AnalyticsEventHelper.esm.js",
   "scripts": {
