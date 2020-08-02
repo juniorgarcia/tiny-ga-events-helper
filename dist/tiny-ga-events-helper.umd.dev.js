@@ -26,9 +26,9 @@
     return Constructor;
   }
 
-  var AnalyticsEventsHelper = /*#__PURE__*/function () {
-    function AnalyticsEventsHelper(events) {
-      _classCallCheck(this, AnalyticsEventsHelper);
+  var TinyGaEventsHelper = /*#__PURE__*/function () {
+    function TinyGaEventsHelper(events) {
+      _classCallCheck(this, TinyGaEventsHelper);
 
       this.events = events;
       this._mandatoryKeys = ['domEvent', 'el', 'eventCategory', 'eventAction'];
@@ -44,7 +44,7 @@
       }
     }
 
-    _createClass(AnalyticsEventsHelper, [{
+    _createClass(TinyGaEventsHelper, [{
       key: "addEvent",
       value: function addEvent(event) {
         var instance = this;
@@ -130,10 +130,10 @@
       }
     }]);
 
-    return AnalyticsEventsHelper;
+    return TinyGaEventsHelper;
   }();
 
-  return AnalyticsEventsHelper;
+  return TinyGaEventsHelper;
 
 })));
-//# sourceMappingURL=analytics-events-helper.umd.dev.js.map
+//# sourceMappingURL=tiny-ga-events-helper.umd.dev.js.map

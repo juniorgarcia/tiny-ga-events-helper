@@ -20,9 +20,9 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
-var AnalyticsEventsHelper = /*#__PURE__*/function () {
-  function AnalyticsEventsHelper(events) {
-    _classCallCheck(this, AnalyticsEventsHelper);
+var TinyGaEventsHelper = /*#__PURE__*/function () {
+  function TinyGaEventsHelper(events) {
+    _classCallCheck(this, TinyGaEventsHelper);
 
     this.events = events;
     this._mandatoryKeys = ['domEvent', 'el', 'eventCategory', 'eventAction'];
@@ -38,7 +38,7 @@ var AnalyticsEventsHelper = /*#__PURE__*/function () {
     }
   }
 
-  _createClass(AnalyticsEventsHelper, [{
+  _createClass(TinyGaEventsHelper, [{
     key: "addEvent",
     value: function addEvent(event) {
       var instance = this;
@@ -124,8 +124,8 @@ var AnalyticsEventsHelper = /*#__PURE__*/function () {
     }
   }]);
 
-  return AnalyticsEventsHelper;
+  return TinyGaEventsHelper;
 }();
 
-export default AnalyticsEventsHelper;
-//# sourceMappingURL=analytics-events-helper.esm.dev.js.map
+export default TinyGaEventsHelper;
+//# sourceMappingURL=tiny-ga-events-helper.esm.dev.js.map

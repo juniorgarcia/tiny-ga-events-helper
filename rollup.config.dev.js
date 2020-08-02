@@ -2,7 +2,11 @@ import babel from '@rollup/plugin-babel'
 import serve from 'rollup-plugin-serve'
 import livereload from 'rollup-plugin-livereload'
 
-const plugins = [babel()]
+const plugins = [
+  babel({
+    babelHelpers: 'bundled',
+  }),
+]
 
 process.env.serve &&
   plugins.push(
@@ -15,15 +19,15 @@ process.env.serve &&
   )
 
 export default {
-  input: 'src/analytics-events-helper.js',
+  input: 'src/tiny-ga-events-helper.js',
   output: [
     {
-      file: 'dist/analytics-events-helper.esm.dev.js',
+      file: 'dist/tiny-ga-events-helper.esm.dev.js',
       format: 'es',
       sourcemap: true,
     },
     {
-      file: 'dist/analytics-events-helper.umd.dev.js',
+      file: 'dist/tiny-ga-events-helper.umd.dev.js',
       format: 'umd',
       name: 'AnalyticsEventsHelper',
       sourcemap: true,
