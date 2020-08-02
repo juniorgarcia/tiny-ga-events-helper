@@ -1,4 +1,4 @@
-export default class AnalyticsEventHelper {
+export default class TinyGaEventsHelper {
   constructor(events) {
     this.events = events
     this._mandatoryKeys = ['domEvent', 'el', 'eventCategory', 'eventAction']

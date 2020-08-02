@@ -1,10 +1,15 @@
 {
-  "name": "ga-events-helper",
-  "version": "0.3.0-beta",
+  "name": "tiny-ga-events-helper",
+  "version": "0.3.1-beta",
   "description": "A JavaScript library helper to add events to Google Analytics based on DOM events.",
-  "main": "src/AnalyticsEventHelper.esm.js",
+  "main": "dist/tiny-ga-events-helper.umd.dev.js",
+  "module": "dist/tiny-ga-events-helper.esm.dev.js",
   "scripts": {
-    "bundle": "rollup -c rollup.config.prod.js"
+    "bundle:prod": "rollup -c --environment build:prod",
+    "bundle:dev": "rollup -c --environment build:dev",
+    "bundle:all": "rollup -c --environment build:all",
+    "serve": "rollup -c --environment build:dev,serve",
+    "lint": "eslint ./src/**/*.js"
   },
   "author": "Júnior Garcia <itamarjr91@gmail.com>",
   "license": "MIT",
@@ -21,11 +26,19 @@
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
     "prettier": "2.0.5",
     "rollup": "^2.23.0",
     "rollup-plugin-delete": "^2.0.0",
-    "rollup-plugin-gzip": "^2.5.0",
-    "rollup-plugin-terser": "^6.1.0"
+    "rollup-plugin-livereload": "^1.3.0",
+    "rollup-plugin-serve": "^1.0.3",
+    "rollup-plugin-terser": "^6.1.0",
+    "serve": "^11.3.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
   "dependencies": {}
 }
