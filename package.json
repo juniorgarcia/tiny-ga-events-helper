@@ -1,6 +1,6 @@
 {
   "name": "tiny-ga-events-helper",
-  "version": "0.3.1-beta",
+  "version": "0.3.2-beta",
   "description": "A JavaScript library helper to add events to Google Analytics based on DOM events.",
   "main": "dist/tiny-ga-events-helper.umd.dev.js",
   "module": "dist/tiny-ga-events-helper.esm.dev.js",
