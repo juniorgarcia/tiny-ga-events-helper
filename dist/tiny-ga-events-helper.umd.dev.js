@@ -1,7 +1,9 @@
+
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.AnalyticsEventsHelper = factory());
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.TinyGaEventsHelper = factory());
 }(this, (function () { 'use strict';
 
   function _classCallCheck(instance, Constructor) {
@@ -26,67 +28,118 @@
     return Constructor;
   }
 
+  /**
+   * @typedef TinyGaEventsHelperOptions
+   * @property {boolean?} debug
+   */
+
+  /**
+   * @typedef TinyGaEventsHelperEvent
+   * @property {string} el
+   * @property {string} domEvent
+   * @property {string} eventCategory
+   * @property {string} eventAction
+   * @property {(?string|?Function)} eventLabel
+   * @property {(?string|?Function)} eventValue
+   */
+
+  /**
+   * @typedef TinyGaEventsHelper
+   * @property {TinyGaEventsHelperOptions} options
+   * @property {TinyGaEventsHelperEvent[]} events;
+   */
+
+  /** @type {string[]} */
+  var mandatoryKeys = ['domEvent', 'el', 'eventCategory', 'eventAction'];
+  /** @type {string[]} */
+
+  var availableKeysForEvent = ['eventCategory', 'eventAction', 'eventLabel', 'eventValue'];
+  /**
+   * @type {TinyGaEventsHelper}
+   */
+
   var TinyGaEventsHelper = /*#__PURE__*/function () {
+    /**
+     * @param {TinyGaEventsHelperEvent[]} events
+     * @param {TinyGaEventsHelperOptions} options
+     * @constructor
+     */
     function TinyGaEventsHelper(events) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+        debug: false
+      };
+
       _classCallCheck(this, TinyGaEventsHelper);
 
       this.events = events;
-      this._mandatoryKeys = ['domEvent', 'el', 'eventCategory', 'eventAction'];
-      this._availableKeysForEvent = ['eventCategory', 'eventAction', 'eventLabel', 'eventValue'];
-      console.group('Received events: ');
-      console.log(this.events);
-      console.groupEnd();
+      this.options = options;
 
-      if (this._isValidConfig()) {
+      if (this.options.debug) {
+        console.group('Received events: ');
+        console.log(this.events);
+        console.groupEnd();
+      }
+
+      if (TinyGaEventsHelper.isValidConfig(this.events)) {
         this.addEvents(this.events);
       } else {
         throw 'Invalid configuration exception.';
       }
     }
+    /**
+     * Adds a single event to Google Analytics
+     * @param {TinyGaEventsHelperEvent} event
+     */
+
 
     _createClass(TinyGaEventsHelper, [{
       key: "addEvent",
       value: function addEvent(event) {
-        var instance = this;
+        var self = this;
         var el = document.querySelectorAll(event.el);
 
         for (var i = 0; i < el.length; i++) {
           el[i].addEventListener(event.domEvent, function () {
-            if (ga !== undefined) {
+            if (ga) {
               ga('send', Object.assign({
                 hitType: 'event'
-              }, instance._extractValuesFromEvent(event, this)));
+              }, TinyGaEventsHelper.extractValuesFromEvent(event, this, self.options.debug)));
             } else {
-              console.error('Google Analytics not included or blocked by the browser.');
+              throw 'Google Analytics not included or blocked by the browser.';
             }
           });
         }
       }
+      /**
+       * Adds a collection of events
+       * @param {TinyGaEventsHelperEvent[]} events
+       */
+
     }, {
       key: "addEvents",
-      value: function addEvents(events) {
-        var self = this;
-        events.forEach(function (event) {
-          console.info("Adding event \"".concat(event.eventCategory, "\"."));
-          self.addEvent(event);
-        });
+      value: function addEvents() {
+        var events = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        events.length > 0 && events.map(this.addEvent.bind(this));
       }
-    }, {
-      key: "_isValidConfig",
-      value: function _isValidConfig() {
-        if (this.events instanceof Array && this.events.length > 0) {
-          console.info('Configuration is Array and bigger than zero.');
+      /**
+       * Validates the instance config
+       * @param {TinyGaEventsHelperEvent[]}
+       * @return {boolean}
+       * @static
+       */
 
-          for (var i = 0; i < this.events.length; i++) {
-            var currentEvent = this.events[i];
+    }], [{
+      key: "isValidConfig",
+      value: function isValidConfig(events) {
+        if (Array.isArray(events) && events.length > 0) {
+          for (var i = 0; i < events.length; i++) {
+            var currentEvent = events[i];
 
-            for (var j = 0; j < this._mandatoryKeys.length; j++) {
-              var currentMandatoryKey = this._mandatoryKeys[j];
-              console.info("Checking if configuration has mandatory key \"".concat(currentMandatoryKey, "\""));
+            for (var j = 0; j < mandatoryKeys.length; j++) {
+              var currentMandatoryKey = mandatoryKeys[j];
 
               if (!currentEvent.hasOwnProperty(currentMandatoryKey) || currentEvent[currentMandatoryKey] === null) {
-                console.error("The configuration at position \"".concat(j, "\" doesn't have the mandatory key \"").concat(currentMandatoryKey, "\" or it's null."));
-                return false;
+                throw "The configuration at position \"".concat(j, "\" doesn't have the mandatory key \"").concat(currentMandatoryKey, "\" or it's null.");
               }
             }
           }
@@ -96,36 +149,48 @@
 
         return false;
       }
+      /**
+       * @param {TinyGaEventsHelperEvent} event
+       * @param {HTMLElement} el
+       * @param {?boolean} [showDebugInfo=false]
+       * @static
+       * @return {{}}
+       */
+
     }, {
-      key: "_extractValuesFromEvent",
-      value: function _extractValuesFromEvent(event, el) {
+      key: "extractValuesFromEvent",
+      value: function extractValuesFromEvent(event, el) {
+        var showDebugInfo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
         var keys = Object.keys(event);
         var values = {};
-        console.group("Extracting values from event:");
+        showDebugInfo && console.group("Extracting values from event:");
 
         for (var i = 0; i < keys.length; i++) {
           var key = keys[i];
 
-          if (this._availableKeysForEvent.indexOf(key) === -1) {
-            console.log("Invalid key for GA event:\"' + key + '\".");
+          if (!availableKeysForEvent.includes(key)) {
+            showDebugInfo && console.log("Invalid key for GA event:\"' + key + '\".");
             continue;
           }
 
           var value = event[key];
 
           if (typeof value === 'function') {
-            console.info("Return type of the event key \"".concat(key, "\" is a function."));
+            showDebugInfo && console.info("Return type of the event key \"".concat(key, "\" is a function."));
             values[key] = value.apply(el);
           } else {
-            console.info("Return type of the event key \"".concat(key, "\" is a literal \"").concat(value, "\"."));
+            showDebugInfo && console.info("Return type of the event key \"".concat(key, "\" is a literal \"").concat(value, "\"."));
             values[key] = value;
           }
         }
 
-        console.group('Values:');
-        console.log(values);
-        console.groupEnd();
-        console.groupEnd();
+        if (showDebugInfo) {
+          console.group('Values:');
+          console.log(values);
+          console.groupEnd();
+          console.groupEnd();
+        }
+
         return values;
       }
     }]);

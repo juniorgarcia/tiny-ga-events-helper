@@ -1,15 +1,17 @@
 {
   "name": "tiny-ga-events-helper",
-  "version": "0.3.3-beta",
+  "version": "0.4.0-beta",
   "description": "A JavaScript library helper to add events to Google Analytics based on DOM events.",
   "main": "dist/tiny-ga-events-helper.umd.dev.js",
   "module": "dist/tiny-ga-events-helper.esm.dev.js",
+  "types": "index.d.ts",
   "scripts": {
     "bundle:prod": "rollup -c --environment build:prod",
     "bundle:dev": "rollup -c --environment build:dev",
     "bundle:all": "rollup -c --environment build:all",
     "serve": "rollup -c --environment build:dev,serve",
-    "lint": "eslint ./src/**/*.js"
+    "lint": "eslint ./src/**/*.js",
+    "test": "jest"
   },
   "author": "Júnior Garcia <itamarjr91@gmail.com>",
   "license": "MIT",
@@ -20,6 +22,7 @@
     "@rollup/plugin-babel": "^5.1.0",
     "@rollup/plugin-node-resolve": "^8.4.0",
     "babel-core": "^6.26.0",
+    "babel-jest": "^26.2.2",
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
@@ -27,6 +30,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
+    "jest": "^26.2.2",
     "prettier": "2.0.5",
     "rollup": "^2.23.0",
     "rollup-plugin-delete": "^2.0.0",

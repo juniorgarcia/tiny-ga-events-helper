@@ -29,7 +29,7 @@ export default {
     {
       file: 'dist/tiny-ga-events-helper.umd.dev.js',
       format: 'umd',
-      name: 'AnalyticsEventsHelper',
+      name: 'TinyGaEventsHelper',
       sourcemap: true,
     },
   ],

@@ -8,7 +8,7 @@ If you would like to check an example, see [index.html](https://github.com/junio
 
 ## How to use it:
 1. Include the file `dist/tiny-ga-events-helper.umd.prod.js` in your HTML or import the
-module like `import { TinyGaEventsHelper } from 'tiny-ga-events-helper`;
+module like `import { TinyGAEventsHelper } from 'tiny-ga-events-helper`;
 2. In your web page file, create an array with objects like this:
 
 ```
