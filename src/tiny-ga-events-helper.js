@@ -11,6 +11,7 @@
  * @property {string} eventAction
  * @property {(?string|?Function)} eventLabel
  * @property {(?string|?Function)} eventValue
+ * @property {Map<Element,Function>} handlers
  */
 
 /**
@@ -66,9 +67,10 @@ export default class TinyGaEventsHelper {
    */
   addEvent(event) {
     const self = this
-    let el = document.querySelectorAll(event.el)
-    for (let i = 0; i < el.length; i++) {
-      el[i].addEventListener(event.domEvent, function () {
+    let elements = document.querySelectorAll(event.el)
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i]
+      const handler = function () {
         ga &&
           ga(
             'send',
@@ -81,7 +83,10 @@ export default class TinyGaEventsHelper {
               )
             )
           )
-      })
+      }
+      element.addEventListener(event.domEvent, handler)
+      event.handlers = event.handlers || new Map()
+      event.handlers.set(element, handler)
     }
   }
 
@@ -162,5 +167,22 @@ export default class TinyGaEventsHelper {
       console.groupEnd()
     }
     return values
+  }
+
+  /**
+   * Removes all the configured event listeners
+   */
+  destroy() {
+    for (let i = 0; i < this.events.length; i++) {
+      /** @type {TinyGaEventsHelperEvent} */
+      const event = this.events[i]
+      const elements = document.querySelectorAll(event.el)
+      for (let j = 0; j < elements.length; j++) {
+        /** @type {Element} */
+        const el = elements[j]
+        el.removeEventListener(event.domEvent, event.handlers.get(el))
+        event.handlers.delete(el)
+      }
+    }
   }
 }
