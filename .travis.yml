@@ -1,0 +1,11 @@
+language: node_js
+cache: yarn
+node_js:
+  - '14.4'
+deploy:
+  on:
+    tags: true
+  provider: npm
+  email: itamarjr91@gmail.com
+  api_key:
+    secure: dV+um1kmbsle13eLGCKwkIoz3b4jUEzcU5uwxpX0gBiH2S4ApVBE1ojUWk43/wwpZzZbk3Iiaxy1ub28dz1qgrIJkZ6AS9iTj7L0fxWHWSR3FB9hnfRTy/CitwmmgYY0S5un41kh1nnTInvtHNkUYrmqQqgTeliGLmWBd6qKEYMmB1wfUMv/1fpHJ65jaUlNrCyZFAH0d/pKsxRaunrtOTjIx6RRwkYFU022XxIeJ7eepNt24dzj2nRWO3Db+cKrZ/x6IC+piEDs3oq9BhM/bUBf+THJCFsDF4LAvOkBck1w1wI2gLzEZHeVLI1l31r86BAxZXzJsxzv3RaJJjvl1zdSPo3KGuE4blX0M86vS7AAnWOs1r5p2SzmQClVzTlHVGnylYu+SVHT3M2UEpRtMFgvnUsthofBcmLuXso+9INLILCdzD38hkgMJ6QLkiE/++az6M8V05eOKKzrHEuBRUsxo/Khw2ePH9vL3676BkLbiS70IoyoKzIFTdfio23/gtQZaEluY2aSDZEUfjhFMwaciDd6z9XrEo8zPUx27f5ahcqz7Q7OJYLf9vh+UZYcph9NOr8GlmaVMWSA+Fc9387VGo6xeZFsZBxPliVZREEmHiq/GV0C0Rt3FeJv53xFKch+TwLZsD1XVMZrQ9FXDc8kqXgp/qtHz3+NpKARBVs=

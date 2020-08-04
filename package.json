@@ -1,17 +1,16 @@
 {
   "name": "tiny-ga-events-helper",
-  "version": "0.4.0-beta",
-  "description": "A JavaScript library helper to add events to Google Analytics based on DOM events.",
+  "version": "1.0.0-rc.1",
+  "description": "A tiny JavaScript library helper to add events to Google Analytics based on DOM events.",
   "main": "dist/tiny-ga-events-helper.umd.dev.js",
   "module": "dist/tiny-ga-events-helper.esm.dev.js",
-  "types": "index.d.ts",
   "scripts": {
     "bundle:prod": "rollup -c --environment build:prod",
     "bundle:dev": "rollup -c --environment build:dev",
     "bundle:all": "rollup -c --environment build:all",
     "serve": "rollup -c --environment build:dev,serve",
     "lint": "eslint ./src/**/*.js",
-    "test": "jest"
+    "test": "jest --silent --coverage"
   },
   "author": "Júnior Garcia <itamarjr91@gmail.com>",
   "license": "MIT",
@@ -41,7 +40,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "npm run lint",
+      "pre-push": "npm test"
     }
   },
   "dependencies": {},
@@ -49,5 +49,9 @@
     "type": "git",
     "url": "git+https://github.com/juniorgarcia/tiny-ga-events-helper.git"
   },
-  "homepage": "https://github.com/juniorgarcia/tiny-ga-events-helper#readme"
+  "homepage": "https://github.com/juniorgarcia/tiny-ga-events-helper#readme",
+  "engines": {
+    "node": ">=14.4",
+    "npm": ">=6.14.5"
+  }
 }
