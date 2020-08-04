@@ -125,3 +125,32 @@ it('throws when there is no Google Analytics on the page', () => {
     ])
   }).toThrow('Google Analytics not included or blocked by the browser.')
 })
+
+describe('destroying the helper', () => {
+  /** @type {HTMLButtonElement} */
+  let button
+
+  beforeEach(() => {
+    button = document.createElement('button')
+    button.id = 'btn'
+    document.body.appendChild(button)
+  })
+
+  it('correctly destroys the instance and removes the event listeners', () => {
+    const event = {
+      el: '#btn',
+      domEvent: 'click',
+      eventCategory: 'category',
+      eventAction: 'action',
+    }
+    instance = new TinyGaEventsHelper([event])
+    expect(ga).not.toHaveBeenCalled()
+    button.dispatchEvent(new MouseEvent('click'))
+    expect(ga).toHaveBeenCalledTimes(1)
+
+    instance.destroy()
+
+    button.dispatchEvent(new MouseEvent('click'))
+    expect(ga).toHaveBeenCalledTimes(1)
+  })
+})

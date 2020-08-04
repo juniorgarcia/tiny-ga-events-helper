@@ -1,5 +1,3 @@
-
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
@@ -41,6 +39,7 @@
    * @property {string} eventAction
    * @property {(?string|?Function)} eventLabel
    * @property {(?string|?Function)} eventValue
+   * @property {Map<Element,Function>} handlers
    */
 
   /**
@@ -62,6 +61,7 @@
     /**
      * @param {TinyGaEventsHelperEvent[]} events
      * @param {TinyGaEventsHelperOptions} options
+     * @throws
      * @constructor
      */
     function TinyGaEventsHelper(events) {
@@ -71,8 +71,10 @@
 
       _classCallCheck(this, TinyGaEventsHelper);
 
+      if (!ga) throw 'Google Analytics not included or blocked by the browser.';
       this.events = events;
       this.options = options;
+      /* istanbul ignore if  */
 
       if (this.options.debug) {
         console.group('Received events: ');
@@ -96,18 +98,20 @@
       key: "addEvent",
       value: function addEvent(event) {
         var self = this;
-        var el = document.querySelectorAll(event.el);
+        var elements = document.querySelectorAll(event.el);
 
-        for (var i = 0; i < el.length; i++) {
-          el[i].addEventListener(event.domEvent, function () {
-            if (ga) {
-              ga('send', Object.assign({
-                hitType: 'event'
-              }, TinyGaEventsHelper.extractValuesFromEvent(event, this, self.options.debug)));
-            } else {
-              throw 'Google Analytics not included or blocked by the browser.';
-            }
-          });
+        for (var i = 0; i < elements.length; i++) {
+          var element = elements[i];
+
+          var handler = function handler() {
+            ga && ga('send', Object.assign({
+              hitType: 'event'
+            }, TinyGaEventsHelper.extractValuesFromEvent(event, this, self.options.debug)));
+          };
+
+          element.addEventListener(event.domEvent, handler);
+          event.handlers = event.handlers || new Map();
+          event.handlers.set(element, handler);
         }
       }
       /**
@@ -125,29 +129,49 @@
        * Validates the instance config
        * @param {TinyGaEventsHelperEvent[]}
        * @return {boolean}
+       * @throws
        * @static
        */
 
+    }, {
+      key: "destroy",
+
+      /**
+       * Removes all the configured event listeners
+       */
+      value: function destroy() {
+        for (var i = 0; i < this.events.length; i++) {
+          /** @type {TinyGaEventsHelperEvent} */
+          var event = this.events[i];
+          var elements = document.querySelectorAll(event.el);
+
+          for (var j = 0; j < elements.length; j++) {
+            /** @type {Element} */
+            var el = elements[j];
+            el.removeEventListener(event.domEvent, event.handlers.get(el));
+            event.handlers["delete"](el);
+          }
+        }
+      }
     }], [{
       key: "isValidConfig",
       value: function isValidConfig(events) {
-        if (Array.isArray(events) && events.length > 0) {
-          for (var i = 0; i < events.length; i++) {
-            var currentEvent = events[i];
+        if (!Array.isArray(events) || events.length === 0) return false;
 
-            for (var j = 0; j < mandatoryKeys.length; j++) {
-              var currentMandatoryKey = mandatoryKeys[j];
+        for (var i = 0; i < events.length; i++) {
+          var currentEvent = events[i];
 
-              if (!currentEvent.hasOwnProperty(currentMandatoryKey) || currentEvent[currentMandatoryKey] === null) {
-                throw "The configuration at position \"".concat(j, "\" doesn't have the mandatory key \"").concat(currentMandatoryKey, "\" or it's null.");
-              }
+          for (var j = 0; j < mandatoryKeys.length; j++) {
+            var currentMandatoryKey = mandatoryKeys[j];
+
+            if (!currentEvent.hasOwnProperty(currentMandatoryKey) || currentEvent[currentMandatoryKey] === null) {
+              console.warn("The configuration at position \"".concat(j, "\" doesn't have the mandatory key \"").concat(currentMandatoryKey, "\" or it's null."));
+              return false;
             }
           }
-
-          return true;
         }
 
-        return false;
+        return true;
       }
       /**
        * @param {TinyGaEventsHelperEvent} event
@@ -183,6 +207,8 @@
             values[key] = value;
           }
         }
+        /* istanbul ignore if  */
+
 
         if (showDebugInfo) {
           console.group('Values:');
