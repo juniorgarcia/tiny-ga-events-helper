@@ -21,7 +21,7 @@ export default {
     {
       file: 'dist/tiny-ga-events-helper.umd.prod.js',
       format: 'umd',
-      name: 'AnalyticsEventsHelper',
+      name: 'TinyGaEventsHelper',
     },
   ],
   plugins,
