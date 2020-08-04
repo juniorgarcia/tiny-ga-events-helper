@@ -1,109 +1,166 @@
+/**
+ * @typedef TinyGaEventsHelperOptions
+ * @property {boolean?} debug
+ */
+
+/**
+ * @typedef TinyGaEventsHelperEvent
+ * @property {string} el
+ * @property {string} domEvent
+ * @property {string} eventCategory
+ * @property {string} eventAction
+ * @property {(?string|?Function)} eventLabel
+ * @property {(?string|?Function)} eventValue
+ */
+
+/**
+ * @typedef TinyGaEventsHelper
+ * @property {TinyGaEventsHelperOptions} options
+ * @property {TinyGaEventsHelperEvent[]} events;
+ */
+
+/** @type {string[]} */
+const mandatoryKeys = ['domEvent', 'el', 'eventCategory', 'eventAction']
+
+/** @type {string[]} */
+const availableKeysForEvent = [
+  'eventCategory',
+  'eventAction',
+  'eventLabel',
+  'eventValue',
+]
+
+/**
+ * @type {TinyGaEventsHelper}
+ */
 export default class TinyGaEventsHelper {
-  constructor(events) {
+  /**
+   * @param {TinyGaEventsHelperEvent[]} events
+   * @param {TinyGaEventsHelperOptions} options
+   * @throws
+   * @constructor
+   */
+  constructor(events, options = { debug: false }) {
+    if (!ga) throw 'Google Analytics not included or blocked by the browser.'
+
     this.events = events
-    this._mandatoryKeys = ['domEvent', 'el', 'eventCategory', 'eventAction']
-    this._availableKeysForEvent = [
-      'eventCategory',
-      'eventAction',
-      'eventLabel',
-      'eventValue',
-    ]
+    this.options = options
 
-    console.group('Received events: ')
-    console.log(this.events)
-    console.groupEnd()
+    /* istanbul ignore if  */
+    if (this.options.debug) {
+      console.group('Received events: ')
+      console.log(this.events)
+      console.groupEnd()
+    }
 
-    if (this._isValidConfig()) {
+    if (TinyGaEventsHelper.isValidConfig(this.events)) {
       this.addEvents(this.events)
     } else {
       throw 'Invalid configuration exception.'
     }
   }
 
+  /**
+   * Adds a single event to Google Analytics
+   * @param {TinyGaEventsHelperEvent} event
+   */
   addEvent(event) {
-    let instance = this
-
+    const self = this
     let el = document.querySelectorAll(event.el)
     for (let i = 0; i < el.length; i++) {
       el[i].addEventListener(event.domEvent, function () {
-        if (ga !== undefined) {
+        ga &&
           ga(
             'send',
             Object.assign(
               { hitType: 'event' },
-              instance._extractValuesFromEvent(event, this)
+              TinyGaEventsHelper.extractValuesFromEvent(
+                event,
+                this,
+                self.options.debug
+              )
             )
           )
-        } else {
-          console.error(
-            'Google Analytics not included or blocked by the browser.'
-          )
-        }
       })
     }
   }
 
-  addEvents(events) {
-    const self = this
-    events.forEach((event) => {
-      console.info(`Adding event "${event.eventCategory}".`)
-      self.addEvent(event)
-    })
+  /**
+   * Adds a collection of events
+   * @param {TinyGaEventsHelperEvent[]} events
+   */
+  addEvents(events = []) {
+    events.length > 0 && events.map(this.addEvent.bind(this))
   }
 
-  _isValidConfig() {
-    if (this.events instanceof Array && this.events.length > 0) {
-      console.info('Configuration is Array and bigger than zero.')
-      for (let i = 0; i < this.events.length; i++) {
-        let currentEvent = this.events[i]
-        for (let j = 0; j < this._mandatoryKeys.length; j++) {
-          let currentMandatoryKey = this._mandatoryKeys[j]
-          console.info(
-            `Checking if configuration has mandatory key "${currentMandatoryKey}"`
+  /**
+   * Validates the instance config
+   * @param {TinyGaEventsHelperEvent[]}
+   * @return {boolean}
+   * @throws
+   * @static
+   */
+  static isValidConfig(events) {
+    if (!Array.isArray(events) || events.length === 0) return false
+
+    for (let i = 0; i < events.length; i++) {
+      let currentEvent = events[i]
+      for (let j = 0; j < mandatoryKeys.length; j++) {
+        let currentMandatoryKey = mandatoryKeys[j]
+        if (
+          !currentEvent.hasOwnProperty(currentMandatoryKey) ||
+          currentEvent[currentMandatoryKey] === null
+        ) {
+          console.warn(
+            `The configuration at position "${j}" doesn't have the mandatory key "${currentMandatoryKey}" or it's null.`
           )
-          if (
-            !currentEvent.hasOwnProperty(currentMandatoryKey) ||
-            currentEvent[currentMandatoryKey] === null
-          ) {
-            console.error(
-              `The configuration at position "${j}" doesn't have the mandatory key "${currentMandatoryKey}" or it's null.`
-            )
-            return false
-          }
+          return false
         }
       }
-      return true
     }
 
-    return false
+    return true
   }
 
-  _extractValuesFromEvent(event, el) {
+  /**
+   * @param {TinyGaEventsHelperEvent} event
+   * @param {HTMLElement} el
+   * @param {?boolean} [showDebugInfo=false]
+   * @static
+   * @return {{}}
+   */
+  static extractValuesFromEvent(event, el, showDebugInfo = false) {
     let keys = Object.keys(event)
     let values = {}
-    console.group(`Extracting values from event:`)
+    showDebugInfo && console.group(`Extracting values from event:`)
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i]
-      if (this._availableKeysForEvent.indexOf(key) === -1) {
-        console.log(`Invalid key for GA event:"' + key + '".`)
+      if (!availableKeysForEvent.includes(key)) {
+        showDebugInfo && console.log(`Invalid key for GA event:"' + key + '".`)
         continue
       }
 
       let value = event[key]
       if (typeof value === 'function') {
-        console.info(`Return type of the event key "${key}" is a function.`)
+        showDebugInfo &&
+          console.info(`Return type of the event key "${key}" is a function.`)
         values[key] = value.apply(el)
       } else {
-        console.info(
-          `Return type of the event key "${key}" is a literal "${value}".`
-        )
+        showDebugInfo &&
+          console.info(
+            `Return type of the event key "${key}" is a literal "${value}".`
+          )
         values[key] = value
       }
     }
-    console.group('Values:')
-    console.log(values)
-    console.groupEnd()
-    console.groupEnd()
+
+    /* istanbul ignore if  */
+    if (showDebugInfo) {
+      console.group('Values:')
+      console.log(values)
+      console.groupEnd()
+      console.groupEnd()
+    }
     return values
   }
 }
