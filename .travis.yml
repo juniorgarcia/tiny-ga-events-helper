@@ -1,7 +1,13 @@
 language: node_js
-cache: yarn
+cache: npm
 node_js:
 - '14.4'
+install:
+  - npm install
+jobs:
+  include:
+    - stage: test
+      script: npm run test-ci
 deploy:
   on:
     tags: true
